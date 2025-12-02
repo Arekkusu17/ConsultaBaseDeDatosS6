@@ -157,10 +157,10 @@ SELECT
         WHERE a.id_profesional = p.id_profesional
           AND EXTRACT(MONTH FROM a.fin_asesoria) = 3
           AND EXTRACT(YEAR  FROM a.fin_asesoria) = EXTRACT(YEAR FROM SYSDATE) - 1
-    ),0) AS "HONORARIO",
-    p.id_profesional AS "ID_PROFESIONAL",
-    p.numrun_prof AS "NUMRUN_PROF",
-    p.sueldo AS "SUELDO"
+    ),0)                                                                                AS "HONORARIO",
+    p.id_profesional                                                                    AS "ID_PROFESIONAL",
+    p.numrun_prof                                                                       AS "NUMRUN_PROF",
+    p.sueldo                                                                            AS "SUELDO"
 FROM profesional p
 JOIN asesoria a ON a.id_profesional = p.id_profesional
 WHERE EXTRACT(MONTH FROM a.fin_asesoria) = 3
