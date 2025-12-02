@@ -1,5 +1,5 @@
 ------------------------------------
--- CASO 1: Reportería de Asesorías
+-- CASO 1: ReporterÃ­a de AsesorÃ­as
 ------------------------------------
 
 SELECT 
@@ -40,7 +40,7 @@ FROM (
        WHERE e.cod_sector = 4 -- codigo de sector retail
        GROUP BY a.id_profesional
 ) t
--- profesionales con asesorías en ambos sectores
+-- profesionales con asesorÃ­as en ambos sectores
 HAVING SUM(t.c_banca) > 0
    AND SUM(t.c_retail) > 0
 GROUP BY t.id_profesional
@@ -48,26 +48,26 @@ ORDER BY t.id_profesional ASC;
 
 
 ------------------------------------
--- CASO 2: Reportería de Mes
+-- CASO 2: ReporterÃ­a de Mes
 ------------------------------------
 --DROP TABLE REPORTE_MES;
 CREATE TABLE REPORTE_MES (
-    id_profesional   NUMBER(10),
-    nombre_completo  VARCHAR2(60),
-    profesion        VARCHAR2(40),
-    comuna           VARCHAR2(40),
-    cant_asesorias   NUMBER(6),
-    total_honor      NUMBER(12),
-    prom_honor       NUMBER(12),
-    min_honor        NUMBER(12),
-    max_honor        NUMBER(12)
+    ID_PROF   NUMBER(10),
+    NOMBRE_COMPLETO  VARCHAR2(60),
+    NOMBRE_PROFESION        VARCHAR2(40),
+    NOM_COMUNA           VARCHAR2(40),
+    NRO_ASESORIAS   NUMBER(6),
+    MONTO_TOTAL_HONORARIOS      NUMBER(12),
+    PROMEDIO_HONORARIO       NUMBER(12),
+    HONORARIO_MINIMO        NUMBER(12),
+    HONORARIO_MAXIMO        NUMBER(12)
 );
 
 INSERT INTO REPORTE_MES
 SELECT 
     p.id_profesional                                                            AS "ID_PROF",
     INITCAP(p.appaterno || ' ' || p.apmaterno || ' ' || p.nombre)               AS "NOMBRE_COMPLETO",
-    pr.nombre_profesion                                                         AS "NOMBRE PROFESION",
+    pr.nombre_profesion                                                         AS "NOMBRE_PROFESION",
     c.nom_comuna                                                                AS "NOM_COMUNA",
     COUNT(*)                                                                    AS "NRO ASESORIAS",
     ROUND(SUM(a.honorario))                                                     AS "MONTO_TOTAL_HONORARIOS",
@@ -95,7 +95,7 @@ SELECT * FROM REPORTE_MES;
 
 
 ------------------------------------
--- CASO 3: Modificación de Honorarios
+-- CASO 3: ModificaciÃ³n de Honorarios
 ------------------------------------
 
 --ANTES
