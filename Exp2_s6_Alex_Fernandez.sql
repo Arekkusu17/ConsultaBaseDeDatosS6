@@ -47,6 +47,72 @@ GROUP BY t.id_profesional
 ORDER BY t.id_profesional ASC;
 
 
+--Other approach for case 1 could be:
+SELECT
+  p.id_profesional AS ID,
+  p.appaterno || ' ' || p.apmaterno || ' ' || p.nombre AS PROFESIONAL,
+  (SELECT COUNT(*) 
+     FROM asesoria a 
+     JOIN empresa e ON a.cod_empresa = e.cod_empresa 
+    WHERE a.id_profesional = p.id_profesional 
+      AND e.cod_sector = 3) AS "NRO ASESORIA BANCA",
+  TO_CHAR((SELECT NVL(SUM(a.honorario), 0)
+     FROM asesoria a 
+     JOIN empresa e ON a.cod_empresa = e.cod_empresa 
+    WHERE a.id_profesional = p.id_profesional 
+      AND e.cod_sector = 3),'$99G999G999') AS "MONTO_TOTAL_BANCA",
+  (SELECT COUNT(*) 
+     FROM asesoria a 
+     JOIN empresa e ON a.cod_empresa = e.cod_empresa 
+    WHERE a.id_profesional = p.id_profesional 
+      AND e.cod_sector = 4) AS "NRO ASESORIA RETAIL",
+  TO_CHAR((SELECT NVL(SUM(a.honorario), 0)
+     FROM asesoria a 
+     JOIN empresa e ON a.cod_empresa = e.cod_empresa 
+    WHERE a.id_profesional = p.id_profesional 
+      AND e.cod_sector = 4),'$99G999G999') AS "MONTO_TOTAL_RETAIL",
+  (
+    (SELECT COUNT(*) 
+       FROM asesoria a 
+       JOIN empresa e ON a.cod_empresa = e.cod_empresa 
+      WHERE a.id_profesional = p.id_profesional 
+        AND e.cod_sector = 3) +
+    (SELECT COUNT(*) 
+       FROM asesoria a 
+       JOIN empresa e ON a.cod_empresa = e.cod_empresa 
+      WHERE a.id_profesional = p.id_profesional 
+        AND e.cod_sector = 4)
+  ) AS "TOTAL ASESORIAS",
+  TO_CHAR((
+    (SELECT NVL(SUM(a.honorario), 0)
+       FROM asesoria a 
+       JOIN empresa e ON a.cod_empresa = e.cod_empresa 
+      WHERE a.id_profesional = p.id_profesional 
+        AND e.cod_sector = 3) +
+    (SELECT NVL(SUM(a.honorario), 0)
+       FROM asesoria a 
+       JOIN empresa e ON a.cod_empresa = e.cod_empresa 
+      WHERE a.id_profesional = p.id_profesional 
+        AND e.cod_sector = 4)
+  ),'$99G999G999') AS "TOTAL HONORARIOS"
+FROM profesional p
+WHERE p.id_profesional IN (
+  SELECT id_profesional FROM (
+    SELECT id_profesional
+    FROM asesoria a
+    JOIN empresa e ON a.cod_empresa = e.cod_empresa
+    WHERE e.cod_sector = 3
+    INTERSECT
+    SELECT id_profesional
+    FROM asesoria a
+    JOIN empresa e ON a.cod_empresa = e.cod_empresa
+    WHERE e.cod_sector = 4
+  )
+)
+ORDER BY ID ASC;
+
+
+
 ------------------------------------
 -- CASO 2: Reportería de Mes
 ------------------------------------
@@ -170,3 +236,4 @@ GROUP BY
     p.numrun_prof, 
     p.sueldo
 ORDER BY p.id_profesional;
+
